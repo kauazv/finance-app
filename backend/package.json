@@ -8,6 +8,6 @@
         "express": "^4.17.2",
         "jsonwebtoken": "^9.0.0",
         "mongoose": "^8.0.0",
-        "axios": "^1.4.0"    
+        "axios": "^1.4.0"
     }
 }
