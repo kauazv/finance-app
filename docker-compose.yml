@@ -1,1 +1,32 @@
- 
+ version: '3.8'
+ services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: finance_pass
+      POSTGRES_DB: finance_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports: ["5432:5432"]
+  
+  backend:
+    build: ./backend
+    volumes: [./backend:/app]
+    environment:
+      DATABASE_URL: postgresql://finance_user:finance_pass@postgres:5432/finance_db
+      JWT_SECRET: super-scret-key123
+    ports: ["8000:8000"]
+    depends_on: [postgres]
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build: ./frontend
+    volumes: [./frontend:/app]
+    ports: ["8080:8080"]
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    depends_on: [backend]
+    command: npm run dev
+  volumes:
+    postgres_data:
